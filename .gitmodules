@@ -1,0 +1,6 @@
+[submodule "llvm-project"]
+	path = llvm-project
+	url = git@github.com:hardos-ebpf-fuzzing/kcfi-ebpf-llvm.git
+[submodule "linux"]
+	path = linux
+	url = git@github.com:hardos-ebpf-fuzzing/kcfi-ebpf-kernel.git

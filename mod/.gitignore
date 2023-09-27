@@ -1,0 +1,9 @@
+*~
+*.ko
+*.o
+*.mod
+*.mod.c
+.*.cmd
+Module.symvers
+modules.order
+.vscode/

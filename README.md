@@ -30,18 +30,19 @@ cd -
 The built LLVM binaries (`clang`, `llvm-ar`, `lld`, etc) are under
 `llvm-project/build/bin`.
 
-Build kernel:
+Build kernel and `libbpf`:
 ```bash
 cd linux
 export PATH=`realpath ../llvm-project/build/bin`:$PATH
 make LLVM=1 oldconfig
 make LLVM=1 -j`nproc`
+make -C tools/lib/bpf -j`nproc`
 ```
 
 Then build the userspace control tools of eKCFI:
 ```bash
 make trace trace_kern.o -C ebpf
-cd ekcfi-test
+cd ekcfi_test
 cargo build -r
 cd -
 ```
@@ -96,7 +97,18 @@ Once finished, the VM can be shutdown by pressing control-D. Due to how the
 `overlayfs` is mounted in the VM, any changes to the kernel directory will
 reflect on the host (but changes to other directories will not).
 
+Also, because this research prototype does currently does not cleanup module
+resource when unloading, VM actually needs to be shutdown after the previous
+step to avoid problems.
+
 ### Enforce KCFI based on obtained trace
+
+Build the trace parsing tool
+```bash
+cd parse_trace
+cargo build -r
+cd -
+```
 
 Build the policy eBPF program
 ```bash
@@ -128,3 +140,10 @@ uname -a
 
 If nothing shows up it is probably correct (since a panic will happen if check
 fails).
+
+### Other notes
+- The userspace tools should be able to be easily rewritten in C (now it's Rust).
+- There is an ugly hack in the module which relies on privilegged userspace to
+  read out the address of symbols not exported by the kernel. This is because of
+  our design principle to not modify the kernel source code. If we were to
+  implement the framework in-tree, then this hack is not needed at all.

@@ -10,8 +10,6 @@
 
 #include <ekcfi.h>
 
-#include "traces.inc"
-
 #define ARRAY_LEN(arr) sizeof(arr) / sizeof(arr[0])
 
 static int ekcfi_attach(int prog_fd)
